@@ -1,97 +1,123 @@
 # validation-data-adjust-tool-container
 
 ## 概要
-本リポジトリは、空間ID変換ツール（data-adjust-tool）を組み込んだ  
-Apache NiFi 実行環境をコンテナイメージとして提供するものです。
 
-ローカル環境での Java / Python / NiFi の構築を不要とし、  
-コンテナを起動するだけで空間ID変換処理の検証が可能になります。
+空間ID変換ツール（data-adjust-tool）を組み込んだ Apache NiFi 環境を、コンテナとして利用できるようにしたものです。
+
+ローカルでの Java / Python / NiFi の環境構築なしで、ブラウザから動作確認が可能です。
 
 ---
 
-## 提供内容
-- Apache NiFi（実行環境）
-- Python実行環境
-- data-adjust-tool（SpatialID関連処理）
-- NiFi上で利用可能な Python Processor
+## 特徴
+
+* Apache NiFi + Python Processor を含む実行環境をコンテナ化
+* data-adjust-tool の API / extensions を組み込み済み
+* Docker 環境があればすぐに利用可能
+* Cloud Shell 等の環境でも動作確認可能
 
 ---
 
 ## コンテナイメージ
+
+```bash
 ghcr.io/aoshima-yuki/validation-data-adjust-tool-container:latest
+```
 
 ---
 
-## 利用方法（ローカルでDockerが使える場合）
+## 利用方法（基本）
 
 ### 1. イメージ取得
+
+```bash
 docker pull ghcr.io/aoshima-yuki/validation-data-adjust-tool-container:latest
+```
 
 ### 2. 起動
-docker run -d --name nifi-http \
-  -p 8080:8080 \
+
+```bash
+docker run -d --name nifi-http -p 8080:8080 \
   ghcr.io/aoshima-yuki/validation-data-adjust-tool-container:latest
+```
 
 ### 3. アクセス
+
+```text
 http://localhost:8080/nifi
-
-### 4. ログイン
-初回起動時にログに出力されるユーザー・パスワードを使用
-
-確認方法：
-docker logs nifi-http | grep Username -A 2
+```
 
 ---
 
-## 動作確認
+## Cloud Shellでの利用方法（Docker未インストール環境向け）
 
-NiFi画面で以下を確認してください。
+### 1. コンテナ起動
 
-1. 右クリック → Add Processor
-2. 以下で検索
-
-- GenerateSpatialID
-- ConvertLinkCSVToSpatialIDCenterPoint
-
----
-
-## Dockerが使えない場合（Cloud Shellでの検証）
-
-ローカルにDockerをインストールできない場合、  
-ブラウザ上で利用可能な Google Cloud Shell を利用して検証できます。
-
-### 手順
-
-1. Cloud Shell を起動  
-   Google Cloud Console 右上の「Cloud Shell」を起動
-
-2. コンテナ起動
+```bash
 docker pull ghcr.io/aoshima-yuki/validation-data-adjust-tool-container:latest
-
-docker run -d --name nifi-http \
-  -p 8080:8080 \
+docker run -d --name nifi-http -p 8080:8080 \
   ghcr.io/aoshima-yuki/validation-data-adjust-tool-container:latest
+```
 
-3. ポート公開  
-Cloud Shell の「Web Preview」からポート 8080 を選択
+### 2. Webプレビューでアクセス
 
-4. NiFi にアクセス  
-http://<CloudShell URL>/nifi
+Cloud Shell の「Web Preview」からポート8080を開く
 
-5. ログイン情報確認
-docker logs nifi-http | grep Username -A 2
+```text
+https://8080-xxxx.cloudshell.dev/nifi
+```
 
 ---
 
-## 注意事項
+## Processorの確認方法
 
-- 初回起動時は NiFi の初期化（NAR展開）に時間がかかる場合があります
-- Cloud Shell 環境では HTTP（8080）で起動します
-- 環境によっては Python Processor が表示されない場合があります
+NiFi画面で「Add Processor」から以下を確認してください。
+
+* Python Processor が利用可能であること
+* SpatialID関連 Processor が表示されること
+
+---
+
+## 注意事項（重要）
+
+### ■ NiFiの挙動について
+
+本コンテナは検証用途のため、以下の点に注意してください。
+
+* 起動直後の挙動については現在継続確認中です
+* Processor配置や操作時に、以下のエラーが表示される場合があります
+
+```text
+Unable to communicate with NiFi
+Please ensure the application is running and check the logs for any errors.
+```
+
+→ 本事象については現在原因および安定動作条件を確認中です
+
+---
+
+### ■ flow.json.gz について
+
+NiFiのフロー定義は `flow.json.gz` に保存されますが、
+
+* 環境差異（ポート / TLS / 設定）に依存する
+* 起動条件によっては不整合が発生する可能性がある
+
+ため、
+
+👉 **flow の同梱方法および再現性については現在検証中です**
+
+---
+
+## 想定用途
+
+* 空間ID変換処理の検証
+* NiFi + Python Processor の動作確認
+* data-adjust-tool の試行環境
+* 非技術者向けデモ環境
 
 ---
 
 ## 補足
 
-本コンテナは検証用途を目的としており、  
-本番環境での利用は想定していません。
+本コンテナは簡易的な検証環境です。
+本番利用を前提とした構成（セキュリティ設定、クラスタ構成等）は含まれていません。
