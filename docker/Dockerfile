@@ -1,4 +1,8 @@
-FROM apache/nifi:2.0.0
+# NiFi 1系で動作確認する場合
+FROM apache/nifi:1.28.1
+
+# 将来 2系に戻す場合は下記を使用
+# FROM apache/nifi:2.0.0
 
 USER root
 
