@@ -19,9 +19,9 @@ nifi.python.extensions.directory=./python/extensions\n\
 nifi.python.framework.directory=./python/framework\n" \
 >> /opt/nifi/nifi-current/conf/nifi.properties
 
-# ★ここがポイント
-COPY docker/start.sh /opt/nifi/scripts/start.sh
-RUN chmod +x /opt/nifi/scripts/start.sh
+COPY docker/start-http.sh /opt/nifi/nifi-current/start-http.sh
+RUN chmod +x /opt/nifi/nifi-current/start-http.sh
 
 WORKDIR /opt/nifi/nifi-current
 USER nifi
+ENTRYPOINT ["./start-http.sh"]
