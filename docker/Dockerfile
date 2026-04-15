@@ -52,7 +52,7 @@ nifi.python.framework.directory=./python\n" \
 # =========================================
 
 COPY docker/start-http.sh /opt/nifi/nifi-current/start-http.sh
-# COPY docker/flow.json.gz /opt/nifi/nifi-current/conf/flow.json.gz
+COPY docker/flow.json.gz /opt/nifi/nifi-current/conf/flow.json.gz
 RUN chmod +x /opt/nifi/nifi-current/start-http.sh
 
 # =========================================
