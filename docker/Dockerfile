@@ -19,5 +19,11 @@ nifi.python.extensions.directory=./python/extensions\n\
 nifi.python.framework.directory=./python/framework\n" \
 >> /opt/nifi/nifi-current/conf/nifi.properties
 
+RUN sed -i '/^nifi.web.https.port=/d' /opt/nifi/nifi-current/conf/nifi.properties && \
+    sed -i '/^nifi.web.https.host=/d' /opt/nifi/nifi-current/conf/nifi.properties && \
+    printf "\n\
+nifi.web.http.host=0.0.0.0\n\
+nifi.web.http.port=8080\n" >> /opt/nifi/nifi-current/conf/nifi.properties
+
 WORKDIR /opt/nifi/nifi-current
 USER nifi
