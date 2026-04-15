@@ -1,10 +1,19 @@
 # validation-data-adjust-tool-container
 
 ## 概要
-空間ID変換ツール（data-adjust-tool）を組み込んだ Apache NiFi 環境を、
-コンテナとして利用できるようにしたものです。
+本リポジトリは、空間ID変換ツール（data-adjust-tool）を組み込んだ  
+Apache NiFi 実行環境をコンテナイメージとして提供するものです。
 
-ローカルでの Java / Python / NiFi の環境構築なしで利用できます。
+ローカル環境での Java / Python / NiFi の構築を不要とし、  
+コンテナを起動するだけで空間ID変換処理の検証が可能になります。
+
+---
+
+## 提供内容
+- Apache NiFi（実行環境）
+- Python実行環境
+- data-adjust-tool（SpatialID関連処理）
+- NiFi上で利用可能な Python Processor
 
 ---
 
@@ -13,30 +22,76 @@ ghcr.io/aoshima-yuki/validation-data-adjust-tool-container:latest
 
 ---
 
-## 使い方
+## 利用方法（ローカルでDockerが使える場合）
 
 ### 1. イメージ取得
 docker pull ghcr.io/aoshima-yuki/validation-data-adjust-tool-container:latest
 
 ### 2. 起動
-docker run -p 8443:8443 \
-  -e SINGLE_USER_CREDENTIALS_USERNAME=admin \
-  -e SINGLE_USER_CREDENTIALS_PASSWORD=Password123!Ab \
+docker run -d --name nifi-http \
+  -p 8080:8080 \
   ghcr.io/aoshima-yuki/validation-data-adjust-tool-container:latest
 
 ### 3. アクセス
-https://localhost:8443/nifi
+http://localhost:8080/nifi
 
 ### 4. ログイン
-Username: admin  
-Password: 起動時に指定したパスワード
+初回起動時にログに出力されるユーザー・パスワードを使用
+
+確認方法：
+docker logs nifi-http | grep Username -A 2
 
 ---
 
 ## 動作確認
-NiFi画面で「Add Processor」を開き、「SpatialID」で検索し、
-以下が表示されることを確認してください。
+
+NiFi画面で以下を確認してください。
+
+1. 右クリック → Add Processor
+2. 以下で検索
 
 - GenerateSpatialID
-- GenerateCylindricalSpatialID
 - ConvertLinkCSVToSpatialIDCenterPoint
+
+---
+
+## Dockerが使えない場合（Cloud Shellでの検証）
+
+ローカルにDockerをインストールできない場合、  
+ブラウザ上で利用可能な Google Cloud Shell を利用して検証できます。
+
+### 手順
+
+1. Cloud Shell を起動  
+   Google Cloud Console 右上の「Cloud Shell」を起動
+
+2. コンテナ起動
+docker pull ghcr.io/aoshima-yuki/validation-data-adjust-tool-container:latest
+
+docker run -d --name nifi-http \
+  -p 8080:8080 \
+  ghcr.io/aoshima-yuki/validation-data-adjust-tool-container:latest
+
+3. ポート公開  
+Cloud Shell の「Web Preview」からポート 8080 を選択
+
+4. NiFi にアクセス  
+http://<CloudShell URL>/nifi
+
+5. ログイン情報確認
+docker logs nifi-http | grep Username -A 2
+
+---
+
+## 注意事項
+
+- 初回起動時は NiFi の初期化（NAR展開）に時間がかかる場合があります
+- Cloud Shell 環境では HTTP（8080）で起動します
+- 環境によっては Python Processor が表示されない場合があります
+
+---
+
+## 補足
+
+本コンテナは検証用途を目的としており、  
+本番環境での利用は想定していません。
