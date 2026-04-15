@@ -19,7 +19,5 @@ nifi.python.extensions.directory=./python/extensions\n\
 nifi.python.framework.directory=./python/framework\n" \
 >> /opt/nifi/nifi-current/conf/nifi.properties
 
-# これを追加
-WORKDIR /opt/nifi/nifi-current/bin
-
+WORKDIR /opt/nifi/nifi-current
 USER nifi
