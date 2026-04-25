@@ -3,10 +3,10 @@
 # =========================================
 
 # 現在：NiFi 1系（CloudShell / HTTP確認用）
-FROM apache/nifi:1.28.1
+# FROM apache/nifi:1.28.1
 
 # ▼ NiFi 2系に戻す場合はこちらに切り替え
-# FROM apache/nifi:2.0.0
+FROM apache/nifi:2.0.0
 
 # =========================================
 # 依存関係インストール
@@ -34,18 +34,18 @@ RUN cp -r /opt/data-adjust-tool/api /opt/nifi/nifi-current/python/ && \
 # =========================================
 
 # ▼ NiFi 1系用（暫定）
-RUN printf "\n\
-nifi.python.command=python3\n\
-nifi.python.extensions.directory=./python\n\
-nifi.python.framework.directory=./python\n" \
->> /opt/nifi/nifi-current/conf/nifi.properties
-
-# ▼ NiFi 2系用（戻す場合はこちらを使用）
 # RUN printf "\n\
 # nifi.python.command=python3\n\
-# nifi.python.extensions.directory=./python/extensions\n\
-# nifi.python.framework.directory=./python/framework\n" \
+# nifi.python.extensions.directory=./python\n\
+# nifi.python.framework.directory=./python\n" \
 # >> /opt/nifi/nifi-current/conf/nifi.properties
+
+# ▼ NiFi 2系用（戻す場合はこちらを使用）
+RUN printf "\n\
+nifi.python.command=python3\n\
+nifi.python.extensions.directory=./python/extensions\n\
+nifi.python.framework.directory=./python/framework\n" \
+>> /opt/nifi/nifi-current/conf/nifi.properties
 
 # =========================================
 # 起動スクリプト
