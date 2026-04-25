@@ -63,7 +63,7 @@ WORKDIR /opt/nifi/nifi-current
 USER nifi
 
 # ▼ HTTPモードで起動（CloudShell用）
-ENTRYPOINT ["./start-http.sh"]
+# ENTRYPOINT ["./start-http.sh"]
 
 # ▼ NiFi標準起動に戻す場合
-# ENTRYPOINT ["../scripts/start.sh"]
+ENTRYPOINT ["../scripts/start.sh"]
